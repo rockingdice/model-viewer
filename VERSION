@@ -1,0 +1,5 @@
+commit a43bb47700dda3ce32b0ecc6fbd5e6e07a8bd885
+Author: Jan Bláha <blaha.j502@gmail.com>
+Date:   Wed Nov 20 20:32:55 2024 +0100
+
+    set shadow depth material side to double (#4950)
