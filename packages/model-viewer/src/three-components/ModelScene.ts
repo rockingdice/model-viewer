@@ -62,6 +62,7 @@ const normalWorld = new Vector3();
 const raycaster = new Raycaster();
 const vector3 = new Vector3();
 const ndc = new Vector2();
+const pos2d = new Vector2;
 
 /**
  * A THREE.Scene object that takes a Model and CanvasHTMLElement and
@@ -535,6 +536,20 @@ export class ModelScene extends Scene {
     ndc.multiplyScalar(2).subScalar(1);
     ndc.y *= -1;
     return ndc;
+  }
+
+  getClientPosition(ndcX: number, ndcY: number) {
+    pos2d.x = ndcX;
+    pos2d.y = ndcY * -1;    
+    pos2d.addScalar(1).divideScalar(2);
+    if (this.xrCamera != null) {
+      pos2d.set(pos2d.x * window.screen.width, pos2d.y * window.screen.height);
+    } else {
+      const rect = this.element.getBoundingClientRect();
+      pos2d.set(
+          pos2d.x * this.width + rect.x, pos2d.y * this.height + rect.y);
+    }
+    return pos2d;
   }
 
   /**
@@ -1144,6 +1159,14 @@ export class ModelScene extends Scene {
     const uv = hit.uv ?? null;
 
     return {position, normal, uv};
+  }
+
+  /** 
+   * Screen to World implementation
+   */
+  worldToScreen(position: Vector3){
+    position.project(this.getCamera());    
+    return this.getClientPosition(position.x, position.y);
   }
 
   /**

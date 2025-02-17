@@ -41,6 +41,7 @@ export declare interface AnnotationInterface {
   positionAndNormalFromPoint(pixelX: number, pixelY: number):
       {position: Vector3D, normal: Vector3D, uv: Vector2D|null}|null;
   surfaceFromPoint(pixelX: number, pixelY: number): string|null;
+  worldToScreen(worldX: number, worldY: number, worldZ: number): {x: number, y: number};
 }
 
 /**
@@ -210,6 +211,15 @@ export const AnnotationMixin = <T extends Constructor<ModelViewerElementBase>>(
       }
 
       return {position: position, normal: normal, uv: uv};
+    }
+
+    worldToScreen(worldX: number, worldY: number, worldZ: number): {x: number, y: number} {
+      const scene = this[$scene];
+      var v3d = new Vector3(worldX, worldY, worldZ);
+      v3d.applyMatrix4(scene.target.matrixWorld);
+      var pos2d = scene.worldToScreen(v3d);
+      var v2d = toVector2D(pos2d);
+      return {x: v2d.u, y: v2d.v};
     }
 
     /**
